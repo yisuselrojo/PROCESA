@@ -1,0 +1,77 @@
+---
+title: "**Pacientes con Insuficiencia Cardíaca**"
+author: Jesús Rojas
+format: html
+toc: true
+lang: es
+theme: superhero
+editor: visual
+---
+
+# 1 - *Introducción*
+
+Los padecimientos cardiovasculares tienen gran importancia en nuestra sociedad, debido a la alta cantidad de afectaciones en las personas, permitiendo inclusive, la muerte. En este apartado, se presentará un pequeño procesamiento a los datos tomados en consideración en una investigación, que a través de un proceso informático llamado *Machine Learning*, se analiza una muestra de 299 personas.
+Fuente de la información: https://bmcmedinformdecismak.biomedcentral.com/articles/10.1186/s12911-020-1023-5
+
+# 2 - *Carga de Paquetes*
+
+```{r}
+#| label: CargaDePaquetes
+#| message: false
+#| warning: false
+library(knitr)
+library(tidyverse)
+
+```
+
+# 3 - *Carga de Datos*
+
+```{r}
+#| label: CargaDeDatos
+Pacientes <- read.csv("heart_failure_clinical_records_dataset.csv")
+```
+
+# 4 - *Consultas*
+
+## 4.1 - Consulta 1
+
+```{r}
+#| label: Consulta1
+Pacientes |> filter(sex==0 & age>75)|> 
+  arrange(desc(age)) |> 
+  select(sex,age,diabetes,
+         high_blood_pressure,
+         serum_creatinine) |>
+  kable() 
+  
+```
+
+## 4.2 - Consulta 2
+
+```{r}
+#| label: Consulta2
+Pacientes |> filter(sex==1) |> 
+  filter(diabetes==1 | smoking==1) |>
+  arrange(age) |>
+  select(sex, age, diabetes, 
+         smoking, ejection_fraction) |>
+  kable()
+```
+
+## 4.3 - Consulta 3
+
+```{r}
+#| label: Consulta3
+Pacientes |> group_by(diabetes) |>
+  summarize(Promedio= mean(ejection_fraction, na.rm=TRUE)) |>
+  kable()
+```
+
+## 4.4 - Consulta 4
+
+```{r}
+#| label: Consulta4
+Pacientes |> filter(sex==1 & DEATH_EVENT==1)  |> 
+  summarize(EdadMenor=min(age, na.rm=TRUE)) |>
+  kable()
+```
